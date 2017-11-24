@@ -1,0 +1,104 @@
+@model IEnumerable<LuwAdmin.Web.Models.ChapterViewModels.IndexViewModel>
+<link href="~/lib/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet" />
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="content-header">
+    <h1>
+        Dashboard
+        <small>Control Panel</small>
+    </h1>
+    <h0>
+        <img src="~/images/LUWTransparent.png" height="100" width="100"/> League of Utah Writers</h0>
+</section>
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>@ViewData["NewLast30Days"]</h3>
+                    <p>New past 30 days</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+                <a href="~/member/index?status=Last30" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>@ViewData["LeftLast30Days"]</h3>
+                    <p>Didn't renew past 30 days</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+                <a href="~/member/index?status=Left30" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h3>@ViewData["Next30Days"]</h3>
+                    <p>Expiring next 30 days</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+                <a href="~/member/index?status=Next30" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@ViewData["MemberCount"]</h3>
+                    <p>Members</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+                <a href="~/member/index" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@ViewData["ChapterCount"]</h3>
+                    <p>Chapters</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-ios-people"></i>
+                </div>
+                <a href="~/chapter/index" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+           setActiveMenu("#menuDashboard");
+        });
+    </script>
+}

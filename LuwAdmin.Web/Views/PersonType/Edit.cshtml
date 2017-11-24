@@ -1,0 +1,159 @@
+@model LuwAdmin.Web.Models.PersonTypeViewModels.PersonTypeEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Person Type";
+}
+
+<section class="content-header">
+    <h1>
+        Person Type
+        <small>Edit</small>
+    </h1>
+</section>
+
+<form asp-action="Edit">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <input asp-for="Id" hidden />
+                        <div class="box-header">
+                            <h3 class="box-title">Person Type Details</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label asp-for="Name" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Name" class="form-control"/>
+                                    <span asp-validation-for="Name" class="text-danger"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-8">
+                                    <div class="checkbox">
+                                        <label asp-for="IsMember">
+                                            <input asp-for="IsMember"/>
+                                            <b>@Html.DisplayNameFor(m => m.IsMember)</b>
+                                            <div style="font-size: x-small">This person type is considered a member of the league.</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-8">
+                                    <div class="checkbox">
+                                        <label asp-for="IsMemberDefault">
+                                            <input asp-for="IsMemberDefault" />
+                                            <b>@Html.DisplayNameFor(m => m.IsMemberDefault)</b>
+                                            <div style="font-size: x-small">This person type is the default for new members.</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-8">
+                                    <div class="checkbox">
+                                        <label asp-for="IsNonMemberDefault">
+                                            <input asp-for="IsNonMemberDefault" />
+                                            <b>@Html.DisplayNameFor(m => m.IsNonMemberDefault)</b>
+                                            <div style="font-size: x-small">This person type is the default for non-members.</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SecurityGroup" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="SecurityGroup" class="form-control">
+                                        <option value="0" disabled="disabled" selected="selected"></option>
+                                        <option value="League">League - Full access - Generally used for Executive Board</option>
+                                        <option value="Chapter">Chapter - View & edit chapter info - Generally used for chapter leaders</option>
+                                        <option value="Member">Member - Can view & edit only their own information - Generally used for members</option>
+                                        <option value="Guest">Non-Member - Has no access - Used for non-members and expired members</option>
+                                    </select>
+                                    <div style="font-size: x-small">Determines features of LUWAdmin that member can access.</div>
+                                    <span asp-validation-for="SecurityGroup" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="MembershipFee" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="MembershipFee" class="form-control"/>
+                                    <span asp-validation-for="MembershipFee" class="text-danger"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="LeagueSplit" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="LeagueSplit" class="form-control"/>
+                                    <span asp-validation-for="LeagueSplit" class="text-danger"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ChapterSplit" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="ChapterSplit" class="form-control"/>
+                                    <span asp-validation-for="ChapterSplit" class="text-danger"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-8">
+                                    <div class="checkbox">
+                                        <label asp-for="SendNewsletter">
+                                            <input asp-for="SendNewsletter"/>
+                                            <b>@Html.DisplayNameFor(m => m.SendNewsletter)</b>
+                                            <div style="font-size: x-small">The league newsletter should be sent to this person type.</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="NewsletterGraceDays" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="NewsletterGraceDays" class="form-control"/>
+                                    <div style="font-size: x-small">If a member does not renew, the number of days to continue sending the league newsletter.</div>
+                                    <span asp-validation-for="NewsletterGraceDays" class="text-danger"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="StartSendingRenewalDays" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="StartSendingRenewalDays" class="form-control"/>
+                                    <div style="font-size: x-small">The number of days before expiration that renewal emails should start being sent.</div>
+                                    <span asp-validation-for="StartSendingRenewalDays" class="text-danger"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="StopSendingRenewalDays" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="StopSendingRenewalDays" class="form-control"/>
+                                    <div style="font-size: x-small">The number of days after expiration that renewal emails should be sent, unless the member renews.</div>
+                                    <span asp-validation-for="StopSendingRenewalDays" class="text-danger"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-md-5">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuConfig");
+        });        
+    </script>
+}

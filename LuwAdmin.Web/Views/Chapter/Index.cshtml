@@ -1,0 +1,92 @@
+@model IEnumerable<LuwAdmin.Web.Models.ChapterViewModels.IndexViewModel>
+<link href="~/lib/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet" />
+@{
+    ViewData["Title"] = "Chapter List";
+}
+
+<section class="content-header">
+    <h1>
+        Chapters
+        <small>Home</small>
+    </h1>
+    <p class="header-button-area">
+        <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
+    </p>
+</section>
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@ViewData["ChapterCount"]</h3>
+                    <p>Chapters</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-ios-people"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    @*More info <i class="fa fa-arrow-circle-right"></i>*@
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Chapters List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="chapterTable" class="table table-hover table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.City)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MeetingInfo)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(Model => item.Name)</a>
+                                        @*@Html.DisplayFor(modelItem => item.Name)*@
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.City)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MeetingInfo)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    
+    
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuChapters");
+            $('#chapterTable').DataTable();
+        });
+    </script>
+}

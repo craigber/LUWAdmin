@@ -1,0 +1,126 @@
+@model LuwAdmin.Web.Models.Chapter
+
+@{
+    ViewData["Title"] = "Edit Chapter";
+}
+
+<section class="content-header">
+    <h1>
+        Chapters
+        <small>Edit</small>
+    </h1>
+</section>
+
+<form asp-action="Edit">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Chapter Details</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <input asp-for="Id" hidden />
+                            <div class="form-group">
+                                <label asp-for="Name" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SubName" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="SubName" class="form-control" />
+                                    <span asp-validation-for="SubName" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Phone" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Phone" class="form-control" />
+                                    <span asp-validation-for="Phone" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Url" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Url" class="form-control" />
+                                    <span asp-validation-for="Url" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Facebook" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Facebook" class="form-control" />
+                                    <span asp-validation-for="Facebook" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Twitter" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Twitter" class="form-control" />
+                                    <span asp-validation-for="Twitter" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Chapter Notes</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Notes</label>
+                                <div class="col-md-5">
+                                    <textarea asp-for="Notes" rows="10" class="form-control textarea-notes"></textarea>
+                                    <span asp-validation-for="Notes" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-5">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Details/@Model.Id" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+            $(document).ready(function () {
+                setActiveMenu("#menuChapters");
+            });
+    </script>
+}
+
+

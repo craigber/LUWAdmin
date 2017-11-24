@@ -1,0 +1,126 @@
+@model LuwAdmin.Web.Models.PersonTypeViewModels.PersonTypeIndexViewModel
+<link href="~/lib/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet" />
+@{
+    ViewData["Title"] = "Person Type List";
+}
+
+<section class="content-header">
+    <h1>
+        Person Type
+        <small>Home</small>
+    </h1>
+    <p class="header-button-area">
+        <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
+    </p>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Person Type List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="personTypeTable" class="table table-hover table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Member
+                                </th>
+                                <th>
+                                    Member Default
+                                </th>
+                                <th>
+                                    Non-Member Default
+                                </th>
+                                <th>
+                                    Security Group
+                                </th>
+                                <th>
+                                    Membership Dues
+                                </th>
+                                <th>
+                                    League Split
+                                </th>
+                                <th>
+                                    Chapter Split
+                                </th>
+                                <th>
+                                    Start Renewal Emails (days)
+                                </th>
+                                <th>
+                                    Stop Renewal Emails (days)
+                                </th>
+                                <th>
+                                    Send Newsletter
+                                </th>
+                                <th>
+                                    Newsletter Grace (days)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PersonTypes)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(x => item.Name)</a>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsMember)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsMemberDefault)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsNonMemberDefault)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SecurityGroup)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MembershipFee)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.LeagueSplit)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ChapterSplit)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StartSendingRenewalDays)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StopSendingRenewalDays)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SendNewsletter)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NewsletterGraceDays)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    
+    
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuConfig");
+            $('#personTypeTable').DataTable();
+        });
+    </script>
+}

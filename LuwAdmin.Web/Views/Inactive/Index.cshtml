@@ -1,0 +1,98 @@
+@model List<LuwAdmin.Web.Models.InactiveViewModels.InactiveListViewModel>
+<link href="~/lib/datatables/media/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+@{
+    ViewData["Title"] = "InactiveMembers List";
+}   
+
+<section class="content-header">
+    <h1>
+        Inactive Members
+        <small>Home</small>
+    </h1>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@Model.Count()</h3>
+                    <p>Inactive Members</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+                @*<a href="~/member/index" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>*@
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Members List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div style="padding-left: 20px">
+                        <table id="memberTable" class="table table-hover table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        First Name
+                                    </th>
+                                    <th>
+                                        Last Name
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("City")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Email")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Expired")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+            {
+                                    <tr>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.FirstName)</a>
+                                        </td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.LastName)</a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.City)
+                                        </td>
+                                        <td>
+                                            <a href="mailto:@item.Email">@Html.DisplayFor(modelItem => item.Email)</a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.WhenExpired)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+            $('#memberTable').DataTable();
+        });
+    </script>
+}

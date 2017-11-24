@@ -1,0 +1,115 @@
+@model LuwAdmin.Web.Models.PersonTypeViewModels.PersonTypeDetailsViewModel
+
+@{
+    ViewData["Title"] = "Person Type Details";
+}
+
+<section class="content-header">
+    <h1>
+        Person Type
+        <small>Details</small>
+    </h1>
+    <p style="margin-top:10px;">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="fa fa-times"></i> Delete</a>
+    </p>
+    <h0>@Html.DisplayFor(model => model.Name)</h0>
+</section>
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Person Type Details</h3>
+                </div>
+                <div class="box-body">
+                    <div style="padding-left: 20px">
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right" asp-for="Name"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.Name)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="IsMember" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.IsMember)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="IsMemberDefault" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.IsMemberDefault)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="IsNonMemberDefault" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.IsNonMemberDefault)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="SecurityGroup" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.SecurityGroup)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="MembershipFee" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.MembershipFee)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="LeagueSplit" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.LeagueSplit)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="ChapterSplit" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.ChapterSplit)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="SendNewsletter" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.SendNewsletter)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="NewsletterGraceDays" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.NewsletterGraceDays)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="StartSendingRenewalDays "class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.StartSendingRenewalDays)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="StopSendingRenewalDays" class="col-md-2 control-label label-right"></label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.StopSendingRenewalDays)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuConfig");
+        });
+    </script>
+}
+

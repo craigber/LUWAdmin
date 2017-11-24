@@ -1,0 +1,216 @@
+@model LuwAdmin.Web.Models.MemberViewModels.MemberDetailsViewModel
+
+@{
+    ViewData["Title"] = "Member Details";
+}
+<section class="content-header">
+    <h1>
+        Members
+        <small>Details</small>
+    </h1>
+    <p>
+        <div class="row" style="padding-left: 20px;">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger"><i class="fa fa-times"></i> Delete</a>
+        </div>
+    </p>
+    <h0>@ViewBag.CommonName</h0>
+</section>
+
+<section class="content">
+    <div class="row">
+        @*This is for alerts for this member*@
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Member Details</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="col-md-2" style="text-align: left;">
+                            <i class="fa fa-user-circle text-light-blue" style="font-size: 32pt"></i>
+                        </div>
+                        <div class="col-md-10">
+                            <div>
+                                @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)
+                            </div>
+                            <div>
+                                <i>@Html.DisplayFor(model => model.Pseudonym)</i>
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.Street1)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.Street2)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.City), @Html.DisplayFor(model => model.State) @Html.DisplayFor(model => model.ZipCode)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.Phone)
+                            </div>
+                            <div>
+                                <a href="mailto:@Model.Email">@Html.DisplayFor(model => model.Email)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Membership Details</h3> <a asp-action="Renew" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div class="row">
+                        <label class="col-md-2 control-label label-right">Person Type</label>
+                        <div class="col-md-10">
+                            @(Model.PersonType.Name)
+                        </div>
+                    </div>    
+                    <div class="row">
+                        <label class="col-md-2 control-label label-right">Expires</label>
+                        <div class="col-md-10">
+                            @if (Model.WhenExpires < DateTime.Now)
+                            {
+                                @Html.DisplayFor(model => model.WhenExpires)
+                            }
+                            else if (Model.WhenExpires >= DateTime.Now && Model.WhenExpires <= DateTime.Now.AddMonths(1))
+                            {
+                                <span class="label label-warning" style="font-size: 10pt">@Html.DisplayFor(modelItem => Model.WhenExpires)</span>
+                            }
+                            else if (Model.WhenExpires >= DateTime.Now)
+                            {
+                                @Html.DisplayFor(modelItem => Model.WhenExpires)
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-2 control-label label-right">Since</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.WhenJoined)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Member Chapters</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div>
+                        <div>
+                            <a asp-action="AddChapter" asp-route-id="@Model.Id" class="btn btn-success"><i class="fa fa-users"></i> Add Chapter</a>
+                            <a asp-action="ChangePrimaryChapter" asp-route-id="@Model.Id" class="btn btn-info"><i class="fa fa-heart"></i> Change Primary</a>
+                            <br/><br/>
+                        </div>
+                        <table id="chapterTable" class="table table-hover table-bordered table-responsive">
+                            <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Chapter")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Joined")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Expires")
+                                </th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.Chapters)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Chapter.Name)
+                                        @if (item.IsPrimary)
+                                        {
+                                            <span> <i class="fa fa-heart"></i></span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.WhenJoined)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.WhenExpires)
+                                        @if (item.WhenExpires <= DateTime.Now.AddDays(30))
+                                        {
+                                            <a asp-action="RenewChapter" asp-route-id="@item.Id" class="btn-xs btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                                        }
+
+                                    </td>
+                                    <td>
+                                        <a asp-action="RenewChapter" asp-route-id="@item.Id">Renew</a> | <a asp-action="LeaveChapter" asp-route-id="@item.Id">Leave</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Member Notes & History</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div>
+                        <div>
+                            <a asp-action="AddNote" asp-route-id="@Model.Id" class="btn btn-success"><i class="fa fa-file-alt"></i> Add Note</a>
+                            <br/><br/>
+                        </div>
+                        <table class="table  table-bordered table-responsive">
+                            <thead>
+                            <tr>
+                                <th style="width: 10%">Date</th>
+                                <th style="width: 20%">Added by</th>
+                                <th>Note</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var note in Model.Notes)
+                            {
+                                <tr>
+                                    <td>@note.WhenAdded</td>
+                                    <td>@note.AddedBy</td>
+                                    <td>@note.Note</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+        });
+    </script>
+}

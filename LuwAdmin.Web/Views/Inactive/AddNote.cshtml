@@ -1,0 +1,59 @@
+﻿@model LuwAdmin.Web.Models.InactiveViewModels.InactiveNoteViewModel
+
+@{
+    ViewData["Title"] = "Inactive Add Note";
+}
+
+<section class="content-header">
+    <h1>
+        Inactive Members
+        <small>Add Note</small>
+    </h1>
+    <h0>@Model.MemberName</h0>
+</section>
+
+
+<form asp-action="AddNote">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Note</h3>
+                        </div>
+                        <div class="box-body">
+                            <input asp-for="ApplicationUserId" hidden />
+                            <div class="form-group">
+                                <label asp-for="Text" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <textarea asp-for="Text" class="form-control" rows="10"></textarea>
+                                    <span asp-validation-for="Text" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+        });
+    </script>
+}

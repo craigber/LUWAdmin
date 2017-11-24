@@ -1,0 +1,198 @@
+@model LuwAdmin.Web.Models.EmailTemplateViewModels.CreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<section class="content-header">
+    <h1>
+        Email Template
+        <small>New</small>
+    </h1>
+</section>
+
+<form asp-action="Create">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Email Template Details</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label asp-for="Name" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="EmailAssignmentId" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <select asp-for="EmailAssignmentId" asp-items="Model.EmailAssignments" class="form-control"></select>
+                                    <span asp-validation-for="EmailAssignmentId" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SendFromName" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <input asp-for="SendFromName" class="form-control" />
+                                    <span asp-validation-for="SendFromName" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SendFromEmailAddress" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <input asp-for="SendFromEmailAddress" class="form-control" />
+                                    <span asp-validation-for="SendFromEmailAddress" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ReplyToEmailAddress" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <input asp-for="ReplyToEmailAddress" class="form-control" />
+                                    <span asp-validation-for="ReplyToEmailAddress" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Email Template Content</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label asp-for="Subject" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <input asp-for="Subject" class="form-control" />
+                                    <span asp-validation-for="Subject" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Body" class="col-md-2 control-label"></label>
+                                <div class="col-md-10">
+                                    <textarea asp-for="Body" class="form-control"></textarea>
+                                    <span asp-validation-for="Body" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+
+
+
+
+
+
+
+@*<h2>New Email Template</h2>
+
+<form asp-action="Create">
+    <div class="form-horizontal">
+        <hr />
+        <h4>EmailTemplate</h4>
+        <hr/>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="well">
+            <div class="form-group">
+                <label asp-for="Name" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailAssignmentId" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <select asp-for="EmailAssignmentId" asp-items="Model.EmailAssignments" class="form-control"></select>
+                    <span asp-validation-for="EmailAssignmentId" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="SendFromName" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="SendFromName" class="form-control" />
+                    <span asp-validation-for="SendFromName" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="SendFromEmailAddress" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="SendFromEmailAddress" class="form-control" />
+                    <span asp-validation-for="SendFromEmailAddress" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReplyToEmailAddress" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="ReplyToEmailAddress" class="form-control" />
+                    <span asp-validation-for="ReplyToEmailAddress" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subject" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Subject" class="form-control" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Body" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <textarea rows="30" cols="100" asp-for="Body" class="form-control"></textarea>
+                    <span asp-validation-for="Body" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                <a asp-action="Index" class="btn btn-default">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            height: 500,
+            menubar: false,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table contextmenu paste code'
+            ],
+            toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+            content_css: '//www.tinymce.com/css/codepen.min.css'
+        });
+    </script>
+}
+
+

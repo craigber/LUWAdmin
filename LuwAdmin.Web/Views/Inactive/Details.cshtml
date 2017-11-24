@@ -1,0 +1,131 @@
+@model LuwAdmin.Web.Models.InactiveViewModels.InactiveDetailsViewModel
+
+@{
+    ViewData["Title"] = "Inactive Member Details";
+}
+<section class="content-header">
+    <h1>
+        Inactive Members
+        <small>Details</small>
+    </h1>
+    <p>
+        <div class="row" style="padding-left: 20px;">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+            <a asp-action="Activate" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fa fa-calendar-check-o"></i> Activate</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-default"><i class="fa fa-remove"></i> Delete</a>
+        </div>
+    </p>
+    <h0>@Model.FirstName @Model.LastName</h0>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Person Details</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="col-md-2">
+                            <i class="fa fa-user-circle text-light-blue" style="font-size: 32pt;"></i>
+                        </div>
+                        <div class="col-md-10">
+                            <div>
+                                @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.Street1)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.Street2)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.City), @Html.DisplayFor(model => model.State) @Html.DisplayFor(model => model.ZipCode)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(model => model.Phone)
+                            </div>
+                            <div>
+                                <a href="mailto:@Model.Email">@Html.DisplayFor(model => model.Email)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Membership Details</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div class="row">
+                        <label class="col-md-2 control-label label-right">Expired</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.WhenExpires)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-2 control-label label-right">First Joined</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.WhenJoined)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Notes & History</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="padding-left: 20px">
+                    <div>
+                        <div>
+                            <a asp-action="AddNote" asp-route-id="@Model.Id" class="btn btn-success"><i class="fa fa-file-text"></i> Add Note</a>
+                            <br /><br />
+                        </div>
+                        <table class="table  table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th style="width:10%">Date</th> 
+                                    <th style="width:20%">Added by</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var note in Model.Notes)
+                                {
+                                    <tr>
+                                        <td>@note.WhenAdded</td>
+                                        <td>@note.AddedBy</td>
+                                        <td>@note.Note</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+        });
+    </script>
+}

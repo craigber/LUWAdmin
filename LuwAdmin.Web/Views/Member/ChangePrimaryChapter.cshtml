@@ -1,0 +1,62 @@
+@model LuwAdmin.Web.Models.MemberViewModels.ChangePrimaryChapterViewModel
+
+@{
+    ViewData["Title"] = "Change Primary Chapter";
+}
+
+<section class="content-header">
+    <h1>
+        Member
+        <small>Change Primary Chapter</small>
+    </h1>
+    <h0>@ViewBag.CommonName</h0>
+    
+</section>
+
+
+<form asp-action="ChangePrimaryChapter">
+    <section class="content">
+        <div class="form-horizontal">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Change Primary Chapter</h3>
+                    </div>
+                    <div class="box-body">
+                        <input asp-for="MemberId" hidden/>
+                        <div class="form-group">
+                            <label asp-for="CurrentPrimary" class="col-md-2 control-label"></label>
+                            <div class="col-md-5">
+                                <input asp-for="CurrentPrimary" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Chapters" class="col-md-2 control-label"></label>
+                            <div class="col-md-5">
+                                <select asp-for="MemberChapterId" asp-items="Model.Chapters" class="form-control"></select>
+                                <span asp-validation-for="MemberChapterId" class="text-danger"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="form-actions no-color">
+                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                <a asp-action="Details" asp-route-id="@Model.MemberId" class="btn btn-default">Cancel</a>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuChapters");
+        });
+    </script>
+}
+
+

@@ -1,0 +1,49 @@
+@model LuwAdmin.Web.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Delete Inactive Member";
+}
+
+<section class="content-header">
+    <h1>
+        Inactive Members
+        <small>Delete</small>
+    </h1>
+    <h0>@Model.FirstName @Model.LastName</h0>
+  </section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Person</h3>
+                </div>
+                <div class="box-body">
+                    <div>
+                        <label>Are you sure you want to delete this inactive member?</label>
+                    </div>
+                </div>
+            </div>
+            <form asp-action="Delete">
+                <input asp-for="Id" hidden />
+
+                <div class="form-actions no-color">
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i> Delete</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+        });
+    </script>
+}
+
+

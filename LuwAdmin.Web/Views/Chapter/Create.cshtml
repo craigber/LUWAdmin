@@ -1,0 +1,289 @@
+@model LuwAdmin.Web.Models.ChapterViewModels.ChapterCreateViewModel
+
+@{
+    ViewData["Title"] = "New Chapter";
+}
+
+<section class="content-header">
+    <h1>
+        Chapters
+        <small>New</small>
+    </h1>
+</section>
+
+<form asp-action="Create">
+
+    <section class="content">
+        <div class="form-horizontal">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Chapter Details</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <input asp-for="Id" hidden />
+                            <div class="form-group">
+                                <label asp-for="Name" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SubName" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="SubName" class="form-control" />
+                                    <span asp-validation-for="SubName" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Phone" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Phone" class="form-control" />
+                                    <span asp-validation-for="Phone" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Url" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Url" class="form-control" />
+                                    <span asp-validation-for="Url" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Facebook" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Facebook" class="form-control" />
+                                    <span asp-validation-for="Facebook" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Twitter" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Twitter" class="form-control" />
+                                    <span asp-validation-for="Twitter" class="text-danger" />
+                                </div>
+                            </div>
+                                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Chapter Meetings</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label asp-for="Venue" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Venue" class="form-control" />
+                                    <span asp-validation-for="Venue" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Street1" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Street1" class="form-control" />
+                                    <span asp-validation-for="Street1" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Street2" class="form-control" />
+                                    <span asp-validation-for="Street2" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="City" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="City" class="form-control" />
+                                    <span asp-validation-for="City" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Zip" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="Zip" class="form-control" />
+                                    <span asp-validation-for="Zip" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="MeetingWeek" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="MeetingWeek" class="form-control">
+                                        <option value="0" disabled="disabled" selected="selected"></option>
+                                        <option value="1">First</option>
+                                        <option value="2">Second</option>
+                                        <option value="3">Third</option>
+                                        <option value="4">Fourth</option>
+                                    </select>
+                                    <span asp-validation-for="MeetingWeek" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="MeetingDay" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="MeetingDay" class="form-control">
+                                        <option value="0" disabled="disabled" selected="selected"></option>
+                                        <option value="1">Sunday</option>
+                                        <option value="2">Monday</option>
+                                        <option value="3">Tuesday</option>
+                                        <option value="4">Wednesday</option>
+                                        <option value="5">Thursday</option>
+                                        <option value="6">Friday</option>
+                                        <option value="7">Saturday</option>
+                                    </select>
+                                    <span asp-validation-for="MeetingDay" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="StartTime" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="StartTime" class="form-control">
+                                        <option value="" disabled="disabled" selected="selected"></option>
+                                        <option value="8:00 AM">8:00 AM</option>
+                                        <option value="8:30 AM">8:30 AM</option>
+                                        <option value="9:00 AM">9:00 AM</option>
+                                        <option value="9:30 AM">9:30 AM</option>
+                                        <option value="10:00 AM">10:00 AM</option>
+                                        <option value="10:30 AM">10:30 AM</option>
+                                        <option value="11:00 AM">11:00 AM</option>
+                                        <option value="11:30 AM">11:30 AM</option>
+                                        <option value="12:00 PM">12:00 PM</option>
+                                        <option value="12:30 PM">12:30 PM</option>
+                                        <option value="1:00 PM">1:00 PM</option>
+                                        <option value="1:30 PM">1:30 PM</option>
+                                        <option value="2:00 PM">2:00 PM</option>
+                                        <option value="2:30 PM">2:30 PM</option>
+                                        <option value="3:00 PM">3:00 PM</option>
+                                        <option value="3:30 PM">3:30 PM</option>
+                                        <option value="4:00 PM">4:00 PM</option>
+                                        <option value="4:30 PM">4:30 PM</option>
+                                        <option value="5:00 PM">5:00 PM</option>
+                                        <option value="5:30 PM">5:30 PM</option>
+                                        <option value="6:00 PM">6:00 PM</option>
+                                        <option value="6:30 PM">6:30 PM</option>
+                                        <option value="7:00 PM">7:00 PM</option>
+                                        <option value="7:30 PM">7:30 PM</option>
+                                        <option value="8:00 PM">8:00 PM</option>
+                                        <option value="8:30 PM">8:30 PM</option>
+                                        <option value="9:00 PM">9:00 PM</option>
+                                        <option value="9:30 PM">9:30 PM</option>
+                                        <option value="10:00 PM">10:00 PM</option>
+                                        <option value="10:30 PM">10:30 PM</option>
+                                        <option value="11:00 PM">11:00 PM</option>
+                                        <option value="11:30 PM">11:30 PM</option>
+                                    </select>
+                                    <span asp-validation-for="StartTime" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="EndTime" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="EndTime" class="form-control">
+                                        <option value="" disabled="disabled" selected="selected"></option>
+                                        <option value="8:00 AM">8:00 AM</option>
+                                        <option value="8:30 AM">8:30 AM</option>
+                                        <option value="9:00 AM">9:00 AM</option>
+                                        <option value="9:30 AM">9:30 AM</option>
+                                        <option value="10:00 AM">10:00 AM</option>
+                                        <option value="10:30 AM">10:30 AM</option>
+                                        <option value="11:00 AM">11:00 AM</option>
+                                        <option value="11:30 AM">11:30 AM</option>
+                                        <option value="12:00 PM">12:00 PM</option>
+                                        <option value="12:30 PM">12:30 PM</option>
+                                        <option value="1:00 PM">1:00 PM</option>
+                                        <option value="1:30 PM">1:30 PM</option>
+                                        <option value="2:00 PM">2:00 PM</option>
+                                        <option value="2:30 PM">2:30 PM</option>
+                                        <option value="3:00 PM">3:00 PM</option>
+                                        <option value="3:30 PM">3:30 PM</option>
+                                        <option value="4:00 PM">4:00 PM</option>
+                                        <option value="4:30 PM">4:30 PM</option>
+                                        <option value="5:00 PM">5:00 PM</option>
+                                        <option value="5:30 PM">5:30 PM</option>
+                                        <option value="6:00 PM">6:00 PM</option>
+                                        <option value="6:30 PM">6:30 PM</option>
+                                        <option value="7:00 PM">7:00 PM</option>
+                                        <option value="7:30 PM">7:30 PM</option>
+                                        <option value="8:00 PM">8:00 PM</option>
+                                        <option value="8:30 PM">8:30 PM</option>
+                                        <option value="9:00 PM">9:00 PM</option>
+                                        <option value="9:30 PM">9:30 PM</option>
+                                        <option value="10:00 PM">10:00 PM</option>
+                                        <option value="10:30 PM">10:30 PM</option>
+                                        <option value="11:00 PM">11:00 PM</option>
+                                        <option value="11:30 PM">11:30 PM</option>
+                                    </select>
+                                    <span asp-validation-for="EndTime" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Chapter Notes</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Notes</label>
+                                <div class="col-md-5">
+                                    <textarea asp-for="Notes" rows="10" class="form-control textarea-notes"></textarea>
+                                    <span asp-validation-for="Notes" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-5">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuChapters");
+        });        
+    </script>
+}

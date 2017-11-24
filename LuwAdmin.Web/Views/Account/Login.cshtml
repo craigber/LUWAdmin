@@ -1,0 +1,107 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_LayoutClean.cshtml";
+}
+
+<section class="content-header">
+    <h0>League of Utah Writers</h0>
+    <small>Welcome!</small>
+</section>
+
+<div class="row">
+    <section class="content">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-lg-2"><img src="~/images/LUWLarge.png" height="170" width="200"/></div>
+                <div class="col-lg-10 col-offset-lg-2">
+                    <div class="col-lg-8">
+                        <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+
+                            <div class="box" style="min-height: 200px;">
+                                <div class="box-header">
+                                    @*<h3 class="box-title">Login with the email you use for LUW</h3>*@
+                                </div>
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="Email" class="col-md-3 control-label"></label>
+                                    <div class="col-md-8">
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Password" class="col-md-3 control-label"></label>
+                                    <div class="col-md-8">
+                                        <input asp-for="Password" class="form-control" />
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-8">
+                                        <div class="checkbox">
+                                            <label asp-for="RememberMe">
+                                                <input asp-for="RememberMe" />
+                                                @Html.DisplayNameFor(m => m.RememberMe)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" col-md-8">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-lock"></i> Log in</button>
+                                    <a asp-action="ForgotPassword" style="margin-left:10px;">Forgot your password?</a>
+                                    @*<p>
+                                        <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
+                                    </p>*@
+                                </div>
+                            </div>
+                    </form>
+                </div>
+                
+                @*<div class="col-lg-4">
+                    <div class="box" style="min-height: 200px;">
+                        <div class="box-header">
+                            <h3 class="box-title">Login with another service</h3>
+                            <div class="small">If this is your first time logging in, you will be asked to link your login with the email you use for LUW.</div>
+                        </div>
+                        @{
+                            var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                            <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-1 col-md-8" style="margin-top: 10px;">
+                                        @foreach (var provider in loginProviders)
+                                        {
+                                            if (provider.Name == "Facebook")
+                                            {
+                                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fab fa-facebook"></i> @provider.Name</button>
+                                            }
+                                            if (provider.Name == "Twitter")
+                                            {
+                                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fab fa-twitter"></i> @provider.Name</button>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </form>
+                        }
+                    </div>
+                </div>*@
+            </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

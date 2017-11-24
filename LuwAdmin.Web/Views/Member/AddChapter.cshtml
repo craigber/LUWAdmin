@@ -1,0 +1,73 @@
+﻿@model LuwAdmin.Web.Models.MemberViewModels.MemberAddChapterViewModel
+
+@{
+    ViewData["Title"] = "Add Chapter";
+}
+
+<section class="content-header">
+    <h1>
+        Member
+        <small>Add Chapter</small>
+    </h1>
+    <h0>@Model.MemberName</h0>
+</section>
+
+
+<form asp-action="AddChapter">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Chapter</h3>
+                        </div>
+                        <div class="box-body">
+                            <input asp-for="ApplicationUserId" hidden />
+                            <div class="form-group">
+                                <label asp-for="ChapterId" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="ChapterId" asp-items="Model.Chapters" class="form-control"></select>
+                                    <span asp-validation-for="ChapterId" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="WhenJoined" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="WhenJoined" class="form-control" />
+                                    <span asp-validation-for="WhenJoined" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="WhenExpires" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <input asp-for="WhenExpires"class="form-control"/>
+                                    <span asp-validation-for="WhenExpires" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+        });
+    </script>
+}

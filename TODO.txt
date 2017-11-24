@@ -1,0 +1,2 @@
+Facebook AppId: 353567375079554 AppSecret: e0a6e2abd6dbede346ac61a43280e260
+Twitter ConsumerKey: ybg13zrQDIuyAZV0kH5X7BihY ConsumerSecret: eIKHb1xi7jY3YwcGnJ8ILPFLG0yjmqofVVVvmoWRzTbUpL9MHN

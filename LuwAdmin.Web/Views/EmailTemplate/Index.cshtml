@@ -1,0 +1,75 @@
+@model IEnumerable<LuwAdmin.Web.Models.EmailTemplateViewModels.IndexViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<section class="content-header">
+    <h1>
+        Email Templates
+        <small>Home</small>
+    </h1>
+    <p class="header-button-area">
+        <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
+    </p>
+</section>
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Email Templates List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="templatesTable" class="table table-hover table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Subject)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Assignment)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Subject)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Assignment)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/lib/datatables/media/js/datatables.min.js"></script>
+    <script src="~/lib/datatables/media/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#templatesTable').DataTable();
+            setActiveMenu("#menuConfig");
+        });
+    </script>
+}

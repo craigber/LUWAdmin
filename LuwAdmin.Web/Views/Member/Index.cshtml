@@ -1,0 +1,205 @@
+@model LuwAdmin.Web.Models.MemberViewModels.MemberIndexViewModel
+<link href="~/lib/datatables/media/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+@{
+    ViewData["Title"] = "Members List";
+}   
+
+<section class="content-header">
+    <h1>
+        Members
+        <small>Home</small>
+    </h1>
+    <p>
+        <div class="btn-group" role="group">
+            <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
+            <div class="btn-group" role="group">
+                <button id="process" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-random"></span> Processing <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="process">
+                    <li><a href="~/member/SendEmailExpireNext30Days">Email expiring in next 30 days</a></li>
+                    <li><a href="#">Email expired past 30 days</a></li>
+                    <li><a href="#">Email all</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Expire members</a></li>
+                </ul>
+            </div>
+        </div>
+    </p>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>@ViewData["MemberCount"]</h3>
+                    <p>Members</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+                <a href="~/member/index" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>@ViewData["Last30Days"]</h3>
+                    <p>New members past 30 days</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                <a href="~/member/index?status=Last30" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-orange">
+                <div class="inner">
+                    <h3>@ViewData["Next30Days"]</h3>
+                    <p>Expiring next 30 days</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-calendar"></i>
+                </div>
+                <a href="~/member/index?status=Next30" class="small-box-footer">
+                    More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <input asp-for="Status" hidden />
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Members List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div style="padding-left: 20px">
+                        @*<div>
+                            <div class="btn-group" role="group" aria-label="...">
+                                <a href="~/member/index?status=Active" id="Active" class="btn btn-default">Active</a>
+                                <a href="~/member/index?status=Inactive" id="Inactive" class="btn btn-default">Inactive</a>
+                                <a href="~/member/index?status=Guest" id="Guest" class="btn btn-default">Guest</a>
+                                <a href="~/member/index?status=All" id="All" class="btn btn-default">All</a>
+                            </div>
+                            <br /><br />
+                        </div>*@
+
+                        <table id="memberTable" class="table table-hover table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Name")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("City")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Email")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Person Type")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Expires")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Chapter")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Members)
+            {
+                                    <tr>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.City)
+                                        </td>
+                                        <td>
+                                            <a href="mailto:@item.Email">@Html.DisplayFor(modelItem => item.Email)</a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PersonType.Name)
+                                        </td>
+                                        @if (item.Status == "Guest")
+                {
+                                            <td></td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.WhenExpires)
+                                                @if (item.WhenExpires >= DateTime.Now && item.WhenExpires <= DateTime.Now.AddMonths(1))
+                                                {
+                                                    <a asp-action="Renew" asp-route-id="@item.Id" class="btn-xs btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                                                }
+                                            </td>
+                                        }
+                                        <td>
+                                            @foreach (var mc in item.Chapters)
+                                            {
+                                                <div>
+                                                    <div class="col-sm-6">
+                                                        @Html.DisplayFor(x => mc.Name)
+                                                        @if (mc.IsPrimary)
+                                                        {
+                                                            <i class="fa fa-heart"></i>
+                                                        }
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        @Html.DisplayFor(x => mc.WhenExpires)
+                                                        @if (mc.WhenExpires <= DateTime.Now.AddDays(30))
+                                                        {
+                                                            <a asp-action="RenewChapter" asp-route-id="@item.Id" class="btn-xs btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                         </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+</div>
+            </div>
+        </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+            $('#memberTable').DataTable();
+            var item = '#' + $('#Status').val();
+            $(item).addClass('pin-selected').attr('disabled', 'disabled');
+            $('#process').dropdown();
+        });
+
+        function submitForm(status) {
+            $("#Status").val(status);
+            document.index.submit();
+        }
+
+        function indexParam(status) {
+            window.location.href = "\index\?status=" + status;
+
+        }
+    </script>
+}

@@ -1,0 +1,132 @@
+@model LuwAdmin.Web.Models.InactiveViewModels.InactiveActivateViewModel
+<link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet" />
+
+@{
+    ViewData["Title"] = "Activate Membership";
+}
+<section class="content-header">
+    <h1>
+        Inactive Members
+        <small>Activate</small>
+    </h1>
+    <h0>@Model.FirstName @Model.LastName</h0>
+</section>
+
+<form asp-action="Activate">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-warning"></div>
+            <div class="row col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Person Details</h3>
+                    </div>
+                    <div class="box-body" style="padding-left: 20px">
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right">Name</label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right">Address</label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.Street1)
+                            </div>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.Street2)
+                            </div>
+                            <div class="col-md-offset-2 col-md-10">
+                                @Html.DisplayFor(model => model.City), @Html.DisplayFor(model => model.State) @Html.DisplayFor(model => model.ZipCode)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right">Phone</label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.Phone)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right">Email</label>
+                            <div class="col-md-10">
+                                <a href="mailto:@Model.Email">@Html.DisplayFor(model => model.Email)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Membership Details</h3>
+                    </div>
+                    <div class="box-body" style="padding-left: 20px">
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right">Expired</label>
+                            <div class="col-md-10">
+                                <span>@Html.DisplayFor(modelItem => Model.WhenExpires)</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label label-right">First Joined</label>
+                            <div class="col-md-10">
+                                @Html.DisplayFor(model => model.WhenJoined)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Activation Details</h3>
+                        </div>
+                        <div class="box-body">
+                            <input asp-for="Id" hidden />
+                            <div class="form-group" id="newWhenExpires">
+                                <label asp-for="NewWhenExpires" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <div class="input-group date" data-provide="datepicker">
+                                        <input type='text' asp-for="NewWhenExpires" class="form-control" /><span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <span asp-validation-for="NewWhenExpires" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ChapterId" class="col-md-2 control-label"></label>
+                                <div class="col-md-5">
+                                    <select asp-for="ChapterId" asp-items="Model.Chapters" class="form-control"></select>
+                                    <span asp-validation-for="ChapterId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            setActiveMenu("#menuMembers");
+            $('.input-group.date').datepicker({});
+        });
+    </script>
+}
