@@ -9,50 +9,36 @@
         Renewals
         <small>Home</small>
     </h1>
-    <p class="header-button-area">
-        <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
-    </p>
 </section>
 
-
 <section class="content">
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-aqua">
-                <div class="inner">
-                    <h3>@ViewData["ChapterCount"]</h3>
-                    <p>Chapters</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-ios-people"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    @*More info <i class="fa fa-arrow-circle-right"></i>*@
-                </a>
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Chapters List</h3>
+                    <h3 class="box-title">Renewals List</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table id="chapterTable" class="table table-hover table-bordered table-responsive">
+                    <table id="renewalTable" class="table table-hover table-bordered table-responsive">
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Name)
+                                    Name
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.City)
+                                    Pen Name
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.MeetingInfo)
+                                    Email
+                                </th>
+                                <th>
+                                    Person Type
+                                </th>
+                                <th>
+                                    Renewals
+                                </th>
+                                <th>
                                 </th>
                             </tr>
                         </thead>
@@ -61,16 +47,83 @@
                             {
                                 <tr>
                                     <td>
-                                        <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(Model => item.Name)</a>
-                                        @*@Html.DisplayFor(modelItem => item.Name)*@
+                                        <a href="~/Member/Details/@item.MemberId" target="_blank">@Html.DisplayFor(Model => item.Name)</a>
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.City)
+                                        @Html.DisplayFor(modelItem => item.Pseudonym)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.MeetingInfo)
+                                        <a href="mailto:@item.Email">@Html.DisplayFor(modelItem => item.Email)</a>
                                     </td>
-                                </tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PersonTypeName)
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @if (item.IsMembershipRenewal)
+                                            {
+                                                <div class="col-xs-12" style="padding-left:0">
+                                                    <div class="col-xs-3" style="padding-left:0">League Membership</div>
+                                                    <div class="col-xs-3" style="padding-left: 0">
+                                                        @if (DateTime.Now.Date <= item.WhenExpires.Date)
+                                                        {
+                                                            <span>
+                                                                @Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.Days))
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-danger">
+                                                                @Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.Days))
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                    <div class="col-xs-2" style="padding-left:0">
+                                                        @if (item.WhenLastRenewalSent.HasValue && item.WhenLastRenewalSent.Value.Year != 1)
+                                                        {
+                                                            @Html.DisplayFor(modelItem => item.WhenLastRenewalSent)
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                            @foreach (var chapter in item.Chapters)
+                                            {
+                                                <div class="col-xs-12" style="padding-left:0">
+                                                    <div class="col-xs-3" style="padding-left: 0">
+                                                        @Html.DisplayFor(c => chapter.Name)
+                                                        @if (chapter.IsPrimary)
+                                                        {
+                                                            <span> <i class="fa fa-heart"></i></span>
+                                                        }
+                                                    </div>
+                                                    <div class="col-xs-3" style="padding-left: 0">
+                                                        @if (DateTime.Now.Date <= chapter.WhenExpires.Date)
+                                                        {
+                                                            <span>
+                                                                @Html.DisplayFor(c => chapter.WhenExpires) (@Html.DisplayFor(c => chapter.Days))
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-danger">
+                                                                @Html.DisplayFor(c => chapter.WhenExpires) (@Html.DisplayFor(c => chapter.Days))
+                                                            </span>
+                                                        }                                                    
+                                                    </div>
+                                                    <div class="col-xs-2" style="padding-left:0">
+                                                        @if (chapter.WhenLastRenewalSent.HasValue && chapter.WhenLastRenewalSent.Value.Year != 1)
+                                                        {
+                                                            @Html.DisplayFor(c => chapter.WhenLastRenewalSent)
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a asp-action="Renew" asp-route-id="@item.MemberId" class="btn btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                                    </td>
+                                </tr>                
                             }
                         </tbody>
                     </table>
@@ -85,8 +138,8 @@
     
     <script>
         $(document).ready(function () {
-            setActiveMenu("#menuChapters");
-            $('#chapterTable').DataTable();
+            setActiveMenu("#menuRenewals");
+            $('#renewalTable').DataTable();
         });
     </script>
 }
