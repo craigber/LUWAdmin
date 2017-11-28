@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LuwAdmin.Web.Data;
+using LuwAdmin.Web.Data.Migrations;
 using LuwAdmin.Web.Models;
 using LuwAdmin.Web.Models.RenewalViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -28,8 +29,18 @@ namespace LuwAdmin.Web.Controllers
             _userManager = userManager;
             //_emailProcessor = emailProcessor;
         }
+
+        public async Task<string> GetCurrentUser()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ViewBag.User = user.FirstName + " " + user.LastName;
+            return user.ContactName == "Legal Name" ? user.FirstName + " " + user.LastName : user.Pseudonym;
+        }
+
         public async Task<IActionResult> Index()
         {
+            ViewBag.User = await GetCurrentUser();
+
             var personTypes = await _context.PersonTypes.Where(p => p.StopSendingRenewalDays > 0 ||
                 p.StartSendingRenewalDays > 0).ToListAsync();
             var members = new List<ApplicationUser>();
@@ -41,11 +52,25 @@ namespace LuwAdmin.Web.Controllers
                 a.WhenExpires >= DateTime.Now.AddDays(-1 * pt.StartSendingRenewalDays) &&
                 a.WhenExpires <= DateTime.Now.AddDays(pt.StopSendingRenewalDays)).ToListAsync());
 
-                memberChapters.AddRange(await _context.MemberChapters.Where(m => m.WhenExpires >= DateTime.Now.AddDays(-1 * pt.StartSendingRenewalDays) &&
-                m.WhenExpires <= DateTime.Now.AddDays(pt.StopSendingRenewalDays)).Include("Chapter")
-                .Include("ApplicationUser").ToListAsync());
-            }
+                var renewingMemberChapters = await _context.MemberChapters
+                    .Where(m => m.WhenExpires >= DateTime.Now.AddDays(-1 * pt.StartSendingRenewalDays)
+                                && m.WhenExpires <= DateTime.Now.AddDays(pt.StopSendingRenewalDays))
+                    .Include("Chapter").Include("ApplicationUser").ToListAsync();
 
+                foreach (var mc in renewingMemberChapters)
+                {
+                    if (!memberChapters.Any(m => m.ApplicationUserId == mc.ApplicationUserId
+                                                 && m.ChapterId == mc.ChapterId))
+                    {
+                        memberChapters.Add(mc);
+                    }
+                }
+                //memberChapters.AddRange(await _context.MemberChapters
+                //    .Where(m => m.WhenExpires >= DateTime.Now.AddDays(-1 * pt.StartSendingRenewalDays) 
+                //    && m.WhenExpires <= DateTime.Now.AddDays(pt.StopSendingRenewalDays))
+                //    .Include("Chapter").Include("ApplicationUser").ToListAsync());
+            }
+            
             var viewModel = new List<RenewalIndexViewModel>();
             foreach (var member in members)
             {
@@ -96,6 +121,72 @@ namespace LuwAdmin.Web.Controllers
                     member.Chapters.Add(chapterRenew);
                 }
 
+            }
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Renew(string id)
+        {
+            var member = await _context.ApplicationUser.Include("PersonType").FirstOrDefaultAsync(a => a.Id == id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+            var personType = await _context.PersonTypes.FindAsync(member.PersonTypeId);
+
+            var chapters = await _context.MemberChapters.Where(c => c.ApplicationUserId == id)
+                .Include("Chapter").ToListAsync();
+
+            var viewModel = new RenewViewModel
+            {
+                MemberId = member.Id,
+                Name = member.FirstName + " " + member.LastName,
+                Pseudonym = member.Pseudonym,
+                CommonName = member.CommonName,
+                Email = member.Email,
+                PersonTypeName = member.PersonType.Name
+            };
+
+            var item = new RenewalItem
+            {
+                Name = "League Membership",
+                WhenExpires = member.WhenExpires,
+                IsRenewal =
+                (member.WhenExpires >= DateTime.Now.AddDays(-1 * member.PersonType.StartSendingRenewalDays) &&
+                 member.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays)),
+                Days = DateTime.Now <= member.WhenExpires
+                    ? member.WhenExpires.Date.Subtract(DateTime.Now.Date).Days
+                    : DateTime.Now.Date.Subtract(member.WhenExpires.Date).Days,
+                DaysText = DateTime.Now <= member.WhenExpires
+                    ? member.WhenExpires.Date.Subtract(DateTime.Now.Date).Days.ToString() + " days"
+                    : DateTime.Now.Date.Subtract(member.WhenExpires.Date).Days.ToString() + " days ago",
+                NewWhenExpires = member.WhenExpires.AddYears(1),
+                ItemId = 0
+            };
+            viewModel.RenewalItems.Add(item);
+
+            foreach (var chapter in chapters)
+            {
+                item = new RenewalItem
+                {
+                    Name = chapter.Chapter.Name,
+                    IsPrimary = chapter.IsPrimary,
+                    WhenExpires = chapter.WhenExpires.Value,
+                    IsRenewal = (chapter.WhenExpires >=
+                                 DateTime.Now.AddDays(-1 * member.PersonType.StartSendingRenewalDays) &&
+                                 chapter.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays)),
+                    Days = DateTime.Now <= chapter.WhenExpires
+                        ? chapter.WhenExpires.Value.Date.Subtract(DateTime.Now.Date).Days
+                        : DateTime.Now.Date.Subtract(chapter.WhenExpires.Value.Date).Days * -1,
+                    DaysText = DateTime.Now <= chapter.WhenExpires
+                        ? chapter.WhenExpires.Value.Date.Subtract(DateTime.Now.Date).Days.ToString() + " days"
+                        : DateTime.Now.Date.Subtract(chapter.WhenExpires.Value.Date).Days.ToString() + " days ago",
+                    NewWhenExpires = chapter.WhenExpires.Value.AddYears(1),
+                    ItemId = chapter.Id
+                };
+                viewModel.RenewalItems.Add(item);
             }
 
             return View(viewModel);

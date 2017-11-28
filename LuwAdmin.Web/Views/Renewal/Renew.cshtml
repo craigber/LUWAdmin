@@ -1,0 +1,114 @@
+@model LuwAdmin.Web.Models.RenewalViewModels.RenewViewModel
+
+@{
+    ViewData["Title"] = "Renew Member";
+}
+
+<section class="content-header">
+    <h1>
+        Renew
+        <small>Member</small>
+    </h1>
+    <h0>@Html.DisplayFor(model => model.CommonName)</h0>
+</section>
+
+<form asp-action="Renew">
+    <section class="content">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Member Details</h3>
+                </div>
+                <div class="box-body" style="padding-left: 20px">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="col-md-2" style="text-align: left;">
+                            <i class="fa fa-user-circle text-light-blue" style="font-size: 32pt"></i>
+                        </div>
+                        <div class="col-md-10">
+                            <div>
+                                @Html.DisplayFor(model => model.Name)
+                            </div>
+                            <div>
+                                <i>@Html.DisplayFor(model => model.Pseudonym)</i>
+                            </div>
+                            <div>
+                                <a href="mailto:@Model.Email">@Html.DisplayFor(model => model.Email)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Renew Items</h3>
+                    <div style="margin-top: 10px;">
+                        <table id="renewTable" class="table table-responsive table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Renew</th>
+                                    <th>Name</th>
+                                    <th>Expires</th>
+                                    <th>New Expiration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.RenewalItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.CheckBoxFor(modelItem => item.IsRenewal)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                            @if (item.IsPrimary)
+                                            {
+                                                <span> <i class="fa fa-heart"></i></span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.IsRenewal && item.Days < 0)
+                                            {
+                                                <span class="label label-danger" style="font-size:9pt">@Html.DisplayFor(modelItem => item.WhenExpires, new {@class="label label-danger"}) (@Html.DisplayFor(modelItem => item.DaysText))</span>
+                                            }
+                                            else if (item.IsRenewal)
+                                            {
+                                                <span class="label label-warning" style="font-size:9pt">@Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.DaysText))</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.DaysText))</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(modelItem => item.NewWhenExpires, item.NewWhenExpires.ToString("MM/dd/yyyy"), new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-5">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                    <a asp-action="Index" class="btn btn-default">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+                //$('#renewTable').DataTable();
+                setActiveMenu("#menuRenew");
+            });
+    </script>
+}
+
+

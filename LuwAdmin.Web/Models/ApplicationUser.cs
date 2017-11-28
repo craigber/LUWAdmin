@@ -45,6 +45,8 @@ namespace LuwAdmin.Web.Models
 
         public int PersonTypeId { get; set; }
 
+        public virtual PersonType PersonType { get; set; }
+
         public virtual string CommonName
         {
             get
