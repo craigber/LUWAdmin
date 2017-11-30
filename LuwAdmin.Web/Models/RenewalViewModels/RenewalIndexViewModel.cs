@@ -9,17 +9,17 @@ namespace LuwAdmin.Web.Models.RenewalViewModels
     public class RenewalIndexViewModel
     {
         public string MemberId { get; set; }
+        public string CommonName { get; set; }
         public string Name { get; set; }
         public string Pseudonym { get; set; }
+        public string Street1 { get; set; }
+        public string Street2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
         public string Email { get; set; }
         public string PersonTypeName { get; set; }
-        public bool IsMembershipRenewal { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime WhenExpires { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime? WhenLastRenewalSent { get; set; }
+        
         public IList<ChapterRenewal> Chapters { get; set; }
 
         public string Days { get; set; }

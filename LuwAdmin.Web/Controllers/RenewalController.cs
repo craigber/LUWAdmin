@@ -65,27 +65,39 @@ namespace LuwAdmin.Web.Controllers
                         memberChapters.Add(mc);
                     }
                 }
-                //memberChapters.AddRange(await _context.MemberChapters
-                //    .Where(m => m.WhenExpires >= DateTime.Now.AddDays(-1 * pt.StartSendingRenewalDays) 
-                //    && m.WhenExpires <= DateTime.Now.AddDays(pt.StopSendingRenewalDays))
-                //    .Include("Chapter").Include("ApplicationUser").ToListAsync());
             }
             
             var viewModel = new List<RenewalIndexViewModel>();
             foreach (var member in members)
             {
-                viewModel.Add(new RenewalIndexViewModel
+                var renewMember = new RenewalIndexViewModel
                 {
                     MemberId = member.Id,
                     Name = member.FirstName + " " + member.LastName,
                     Pseudonym = member.Pseudonym,
+                    CommonName = member.CommonName,
+                    Street1 = member.Street1,
+                    Street2 = member.Street2,
+                    City = member.City,
+                    State = member.State,
+                    ZipCode = member.ZipCode,
                     Email = member.Email,
                     PersonTypeName = personTypes.FirstOrDefault(p => p.Id == member.PersonTypeId).Name,
-                    IsMembershipRenewal = true,
-                    WhenExpires = member.WhenExpires,
-                    WhenLastRenewalSent = member.WhenLastRenewalSent,
                     Days = DateTime.Now <= member.WhenExpires ? member.WhenExpires.Date.Subtract(DateTime.Now.Date).Days.ToString() + " days" : DateTime.Now.Date.Subtract(member.WhenExpires.Date).Days.ToString() + " days ago"
-                });
+                };
+
+                var item = new ChapterRenewal
+                {
+                    Name = "League Membership",
+                    WhenExpires = member.WhenExpires,
+                    Days = DateTime.Now <= member.WhenExpires
+                        ? member.WhenExpires.Date.Subtract(DateTime.Now.Date).Days.ToString() + " days"
+                        : DateTime.Now.Date.Subtract(member.WhenExpires.Date).Days.ToString() + " days ago",
+                    WhenLastRenewalSent = member.WhenLastRenewalSent
+                
+                };
+                renewMember.Chapters.Add(item);
+                viewModel.Add(renewMember);
             }
 
             foreach (var chapter in memberChapters)
@@ -120,10 +132,49 @@ namespace LuwAdmin.Web.Controllers
                 {
                     member.Chapters.Add(chapterRenew);
                 }
-
             }
 
-            return View(viewModel);
+            var memberToRenewCount = 0;
+            var memberExpiredCount = 0;
+            var chapterToRenewCount = 0;
+            var chapterExpiredCount = 0;
+            var chapters = new List<string>();
+
+            foreach (var member in viewModel)
+            {
+                foreach (var c in member.Chapters)
+                {
+                    if (c.Name == "League Membership" && c.WhenExpires.Date >= DateTime.Now.Date)
+                    {
+                        memberToRenewCount++;
+                    }
+                    else if (c.Name == "LeagueMembership")
+                    {
+                        memberExpiredCount++;
+                    }
+                    else if (c.WhenExpires.Date >= DateTime.Now.Date)
+                    {
+                        chapterToRenewCount++;
+                    }
+                    else
+                    {
+                        chapterExpiredCount++;
+                    }
+
+                    if (c.Name != "League Membership" && !chapters.Any(x => x == c.Name))
+                    {
+                        chapters.Add(c.Name);
+                    }
+                }
+            }
+
+            ViewBag.MemberToRenewCount = memberToRenewCount;
+            ViewBag.MemberExpiredCount = memberExpiredCount;
+            ViewBag.ChapterToRenewCount = chapterToRenewCount;
+            ViewBag.ChapterExpiredCount = chapterExpiredCount;
+            ViewBag.ChapterCount = chapters.Count;
+            
+            return View(viewModel.OrderBy(v => v.CommonName));
         }
 
         public async Task<IActionResult> Renew(string id)
