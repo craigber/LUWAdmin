@@ -106,19 +106,21 @@
                                 <th>
                                     <div>
                                         <div class="col-md-1"></div>
-                                        <div class="col-md-2"><b>Name/Person Type</b></div>
-                                        <div class="col-md-2"><b>Address/Email</b></div>
-                                        <div class="col-md-6">
-                                            <div>
-                                                <div class="col-sm-12">
-                                                    <div class="col-sm-3">
-                                                        <b>Chapter</b>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <b>Expires</b>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <b>Last Email</b>
+                                        <div class="col-md-11">
+                                            <div class="col-md-2"><b>Name/Person Type</b></div>
+                                            <div class="col-md-2"><b>Address/Email</b></div>
+                                            <div class="col-md-6">
+                                                <div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-3">
+                                                            <b>Chapter</b>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <b>Expires</b>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <b>Last Email</b>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -133,71 +135,78 @@
                                 <tr>
                                     <td>
                                         <div>
-                                        <div class="col-md-1">
-                                            <i class="fa fa-user-circle text-light-blue" style="font-size: 48pt; text-align: left;"></i>
-                                        </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-1">
+                                                <i class="fa fa-user-circle text-light-blue" style="font-size: 48pt; text-align: left;"></i>
+                                            </div>
+                                            <div class="col-md-11">
                                                 <div>
-                                                    <div style="font-size: 24pt;">
-                                                        <a href="~/Member/Details/@item.MemberId" target="_blank">@Html.DisplayFor(Model => item.CommonName)</a>
+                                                    <div class="col-md-11">
+                                                        <div style="font-size: 24pt;">
+                                                            <a href="~/Member/Details/@item.MemberId" target="_blank">@Html.DisplayFor(Model => item.CommonName)</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <a asp-action="Renew" asp-route-id="@item.MemberId" class="btn btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                                                    </div>
+                                                </div>
+                                                    <div class="col-md-2">
+                                                    <div>
+                                                        <div>
+                                                            @Html.DisplayFor(Model => item.Name)
+                                                        </div>
+                                                        <div>
+                                                            <i>@Html.DisplayFor(modelItem => item.Pseudonym)</i>
+                                                        </div>
+
+                                                        <br/>
+                                                        <div>
+                                                            @Html.DisplayFor(modelItem => item.PersonTypeName)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div>
+                                                        @Html.DisplayFor(model => item.Street1)
                                                     </div>
                                                     <div>
-                                                        @Html.DisplayFor(Model => item.Name)
+                                                        @Html.DisplayFor(model => item.Street2)
                                                     </div>
                                                     <div>
-                                                        <i>@Html.DisplayFor(modelItem => item.Pseudonym)</i>
+                                                        @Html.DisplayFor(model => item.City), @Html.DisplayFor(model => item.State) @Html.DisplayFor(model => item.ZipCode)
                                                     </div>
-                                                    
                                                     <br/>
                                                     <div>
-                                                        @Html.DisplayFor(modelItem => item.PersonTypeName)
+                                                        <a href="mailto:@item.Email">@Html.DisplayFor(modelItem => item.Email)</a>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-6">
+                                                    @foreach (var chapter in item.Chapters)
+                                                    {
+                                                        <div class="col-sm-12">
+                                                            <div class="col-sm-3">
+                                                                @Html.DisplayFor(c => chapter.Name)
+                                                                @if (chapter.IsPrimary)
+                                                                {
+                                                                    <span> <i class="fa fa-heart"></i></span>
+                                                                }
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                @if (chapter.WhenExpires.Date < DateTime.Now.Date)
+                                                                {
+                                                                    <span class="label label-danger" style="font-size: 9pt">@Html.DisplayFor(c => chapter.WhenExpires) (@Html.DisplayFor(c => chapter.Days))</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span>@Html.DisplayFor(c => chapter.WhenExpires) (@Html.DisplayFor(c => chapter.Days))</span>
+                                                                }
+                                                            </div>
+                                                            <div class="col-sm-4">@Html.DisplayFor(c => chapter.WhenLastRenewalSent)</div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                
                                             </div>
-                                            <div class="col-md-2">
-                                                <div>
-                                                    @Html.DisplayFor(model => item.Street1)
-                                                </div>
-                                                <div>
-                                                    @Html.DisplayFor(model => item.Street2)
-                                                </div>
-                                                <div>
-                                                    @Html.DisplayFor(model => item.City), @Html.DisplayFor(model => item.State)  @Html.DisplayFor(model => item.ZipCode)
-                                                </div>
-                                                <br />
-                                                <div>
-                                                    <a href="mailto:@item.Email">@Html.DisplayFor(modelItem => item.Email)</a>
-                                                </div> 
-                                            </div>
-                                        <div class="col-md-6">
-                                            @foreach (var chapter in item.Chapters)
-                                            {
-                                                <div class="col-sm-12">
-                                                    <div class="col-sm-3">
-                                                        @Html.DisplayFor(c => chapter.Name) 
-                                                        @if (chapter.IsPrimary)
-                                                        {
-                                                            <span> <i class="fa fa-heart"></i></span>
-                                                        }
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        @if (chapter.WhenExpires.Date < DateTime.Now.Date)
-                                                        {
-                                                            <span class="label label-danger" style="font-size: 9pt">@Html.DisplayFor(c => chapter.WhenExpires) (@Html.DisplayFor(c => chapter.Days))</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span>@Html.DisplayFor(c => chapter.WhenExpires) (@Html.DisplayFor(c => chapter.Days))</span>
-                                                        }
-                                                    </div>
-                                                    <div class="col-sm-4">@Html.DisplayFor(c => chapter.WhenLastRenewalSent)</div>
-                                                </div>
-                                            }
                                         </div>
-                                        <div class="col-md-1">
-                                            <a asp-action="Renew" asp-route-id="@item.MemberId" class="btn btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a> 
-                                        </div>
-                                    </div>
                                 </td>
                             </tr>
                                                         }
