@@ -15,5 +15,7 @@ namespace LuwAdmin.Web.Models.MemberViewModels
         public DateTime WhenExpires { get; set; }
 
         public bool IsPrimary { get; set; }
+        public bool IsExpiring { get; set; }
+        public int DaysToExpiration { get; set; }
     }
 }

@@ -45,5 +45,7 @@ namespace LuwAdmin.Web.Models.RenewalViewModels
 
         [DataType(DataType.Date)]
         public DateTime? WhenLastRenewalSent { get; set; }
+
+        public List<string> IsRenewal { get; set; }
     }
 }

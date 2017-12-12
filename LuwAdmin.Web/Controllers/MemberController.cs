@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LuwAdmin.Web.Data;
+using LuwAdmin.Web.DomainServices;
 using LuwAdmin.Web.Models;
 using LuwAdmin.Web.Models.MemberViewModels;
 using LuwAdmin.Web.Models.SharedViewModels;
@@ -23,15 +25,17 @@ namespace LuwAdmin.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly DomainService _domainService;
         //private readonly IEmailProcessingService _emailProcessor;
 
         public MemberController(ApplicationDbContext context, 
-            UserManager<ApplicationUser> userManager 
+            UserManager<ApplicationUser> userManager
             //IEmailProcessingService emailProcessor
             )
         {
             _context = context;
             _userManager = userManager;
+            _domainService = new DomainService();
             //_emailProcessor = emailProcessor;
         }
 
@@ -42,7 +46,6 @@ namespace LuwAdmin.Controllers
             return user.ContactName == "Legal Name" ? user.FirstName + user.LastName : user.Pseudonym;
         }
 
-        // GET: Member
         public async Task<IActionResult> Index(string status = "Active")
         {
             ViewBag.User = await GetCurrentUser();
@@ -57,26 +60,28 @@ namespace LuwAdmin.Controllers
             IList<ApplicationUser> applicationUsers;
             var chapters = await _context.Chapters.ToListAsync();
 
-            if (status == "All")
+            if (status == "All" || status == "Active")
             {
-                applicationUsers = _context.ApplicationUser.Include(a => a.Chapters).ToList();
+                applicationUsers = await _context.ApplicationUser
+                    .Where(a  => a.WhenExpires.Date >= DateTime.Now.Date)
+                    .Include(a => a.Chapters).ToListAsync();
             }
             else if (status == "Next30")
             {
                 applicationUsers = await _context.ApplicationUser
-                    .Where(a => a.WhenExpires >= DateTime.Now && a.WhenExpires <= DateTime.Now.AddDays(30))
+                    .Where(a => a.WhenExpires.Date >= DateTime.Now.Date && a.WhenExpires.Date <= DateTime.Now.Date.AddDays(30))
                     .Include(a => a.Chapters).ToListAsync();
             }
             else if (status == "Last30")
             {
                 applicationUsers = await _context.ApplicationUser
-                    .Where(a => a.WhenJoined >= DateTime.Now.AddDays(-30))
+                    .Where(a => a.WhenJoined.Date >= DateTime.Now.Date.AddDays(-30))
                     .Include(a => a.Chapters).ToListAsync();
             }
             else if (status == "Left30")
                 applicationUsers = await _context.ApplicationUser
-                    .Where(a => a.WhenExpires >= DateTime.Now.AddDays(-30)
-                    && a.WhenExpires <= DateTime.Now && a.Status == "Inactive")
+                    .Where(a => a.WhenExpires.Date > DateTime.Now.Date.AddDays(-30)
+                    && a.WhenExpires.Date < DateTime.Now.Date)
                     .Include(a => a.Chapters).ToListAsync();
             else
             {
@@ -84,22 +89,38 @@ namespace LuwAdmin.Controllers
                     .Where(a => a.Status == status)
                     .Include(a => a.Chapters).ToListAsync();
             }
+
+            applicationUsers = applicationUsers.OrderBy(a => a.CommonName).ToList();
+
             foreach (var au in applicationUsers)
             {
+                var personType = personTypes.FirstOrDefault(p => p.Id == au.PersonTypeId);
+
                 viewModel.Members.Add(new MemberIndexRow
                 {
                     Id = au.Id,
-                    Name = au.CommonName,
+                    CommonName = au.CommonName,
+                    FirstName = au.FirstName,
+                    LastName = au.LastName,
+                    Pseudonym = au.Pseudonym,
                     PersonType = personTypes.FirstOrDefault(p => p.Id == au.PersonTypeId),
+                    Street1 = au.Street1,
+                    Street2 = au.Street2,
                     City = au.City,
+                    State = au.State,
+                    ZipCode = au.ZipCode,
                     Status = au.Status,
                     Email = au.Email,
+                    PersonTypeName = personType.Name,
                     WhenExpires = au.WhenExpires,
-                    Chapters = GetChapterNames(au.Id, chapters)
+                    WhenJoined = au.WhenJoined,
+                    IsExpiring = _domainService.Expiration.IsExpiring(personType, au.WhenExpires),
+                    DaysToExpiration = _domainService.Expiration.DaysToExpiration(au.WhenExpires),
+                    Chapters = FillChapters(au.Id, personType, chapters)
                 });
             }
 
-            var members = await _context.ApplicationUser.Where(a => a.Status == "Active").ToListAsync();
+            var members = await _context.ApplicationUser.Where(a => a.WhenExpires.Date >= DateTime.Now.Date).ToListAsync();
             ViewBag.MemberCount = members.Count;
             ViewBag.Last30Days = members.Count(m => m.WhenJoined >= DateTime.Now.AddDays(-30));
             ViewBag.Next30Days = members.Count(m => m.WhenExpires >= DateTime.Now && m.WhenExpires <= DateTime.Now.AddDays(30) && m.Status == "Active");
@@ -107,7 +128,7 @@ namespace LuwAdmin.Controllers
             return View(viewModel);
         }
         
-        private IList<MemberChapterIndexViewModel> GetChapterNames(string memberId, List<Chapter> chapters)
+        private IList<MemberChapterIndexViewModel> FillChapters(string memberId, PersonType personType, List<Chapter> chapters)
         {
             var memberChapters = new List<MemberChapterIndexViewModel>();
             var mcs = _context.MemberChapters.Where(m => m.ApplicationUserId == memberId && m.WhenExpires >= DateTime.Now).ToList();
@@ -119,7 +140,10 @@ namespace LuwAdmin.Controllers
                     {
                         ChapterId = chapter.Id,
                         Name = chapter.Name,
-                        WhenExpires = mc.WhenExpires.Value
+                        WhenExpires = mc.WhenExpires.Value,
+                        IsPrimary = mc.IsPrimary,
+                        IsExpiring = _domainService.Expiration.IsExpiring(personType, mc.WhenExpires.Value),
+                        DaysToExpiration = _domainService.Expiration.DaysToExpiration(mc.WhenExpires.Value)
                     });
             }
             return memberChapters;
@@ -139,13 +163,28 @@ namespace LuwAdmin.Controllers
             {
                 return NotFound();
             }
-            
-            var chapters = await _context.MemberChapters
-                .Include(mc => mc.Chapter)
-                .Where(mc => mc.ApplicationUserId == applicationUser.Id && mc.WhenExpires >= DateTime.Now)
-                .ToListAsync();
 
             var personType = await _context.PersonTypes.FindAsync(applicationUser.PersonTypeId);
+
+            var memberChapters = await _context.MemberChapters
+                .Include(mc => mc.Chapter)
+                .Where(mc => mc.ApplicationUserId == applicationUser.Id && mc.WhenExpires >= DateTime.Now.Date.AddDays(-1 * personType.StopSendingRenewalDays))
+                .ToListAsync();
+
+            IList<MemberDetailsChapterViewModel> chapters = new List<MemberDetailsChapterViewModel>();
+            foreach (var mc in memberChapters)
+            {
+                chapters.Add(new MemberDetailsChapterViewModel
+                {
+                    Id = mc.Id,
+                    Name = mc.Chapter.Name,
+                    WhenJoined = mc.WhenJoined,
+                    WhenExpires = mc.WhenExpires.Value,
+                    IsExpiring = _domainService.Expiration.IsExpiring(personType, mc.WhenExpires.Value),
+                    DaysToExpiration = _domainService.Expiration.DaysToExpiration(mc.WhenExpires.Value),
+                    IsPrimary = mc.IsPrimary
+                });
+            }
 
             var viewModel = new MemberDetailsViewModel
             {
@@ -163,14 +202,30 @@ namespace LuwAdmin.Controllers
                 Email = applicationUser.Email,
                 WhenJoined = applicationUser.WhenJoined,
                 WhenExpires = applicationUser.WhenExpires,
+                IsExpiring = _domainService.Expiration.IsExpiring(personType, applicationUser.WhenExpires),
+                DaysToExpiration = _domainService.Expiration.DaysToExpiration(applicationUser.WhenExpires),
                 Notes = await _context.ApplicationUserNotes.Where(n => n.ApplicationUserId == applicationUser.Id).OrderByDescending(n => n.WhenAdded).ToListAsync(),
                 Chapters = chapters,
-                PersonType = personType
+                PersonType = personType,
+                HasUpComingRenewals = chapters.Any(c => c.IsExpiring)
             };
 
             ViewBag.CommonName = applicationUser.CommonName;
 
             return View(viewModel);
+        }
+
+        public bool HasRenewal(ApplicationUser member, IList<MemberChapter> chapters, PersonType personType)
+        {
+            var hasRenewal = false;
+            var renewalPeriodStarts = DateTime.Now.Date.AddDays(-1 * personType.StartSendingRenewalDays);
+            var renewalPeriodEnds = DateTime.Now.Date.AddDays(personType.StopSendingRenewalDays);
+
+            hasRenewal =
+                (member.WhenExpires.Date >= renewalPeriodStarts && member.WhenExpires.Date <= renewalPeriodEnds)
+                || chapters.Any(c => c.WhenExpires?.Date >= renewalPeriodStarts && c.WhenExpires?.Date <= renewalPeriodEnds);
+
+            return hasRenewal;
         }
 
         // GET: Member/Create

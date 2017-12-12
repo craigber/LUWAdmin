@@ -179,6 +179,7 @@ namespace LuwAdmin.Web.Controllers
 
         public async Task<IActionResult> Renew(string id)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             var member = await _context.ApplicationUser.Include("PersonType").FirstOrDefaultAsync(a => a.Id == id);
             if (member == null)
             {
@@ -206,7 +207,7 @@ namespace LuwAdmin.Web.Controllers
                 WhenExpires = member.WhenExpires,
                 IsRenewal =
                 (member.WhenExpires >= DateTime.Now.AddDays(-1 * member.PersonType.StartSendingRenewalDays) &&
-                 member.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays)),
+                 member.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays)) ? 1 : 0,
                 Days = DateTime.Now <= member.WhenExpires
                     ? member.WhenExpires.Date.Subtract(DateTime.Now.Date).Days
                     : DateTime.Now.Date.Subtract(member.WhenExpires.Date).Days,
@@ -225,9 +226,12 @@ namespace LuwAdmin.Web.Controllers
                     Name = chapter.Chapter.Name,
                     IsPrimary = chapter.IsPrimary,
                     WhenExpires = chapter.WhenExpires.Value,
-                    IsRenewal = (chapter.WhenExpires >=
+                    IsRenewal =  chapter.WhenExpires >=
                                  DateTime.Now.AddDays(-1 * member.PersonType.StartSendingRenewalDays) &&
-                                 chapter.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays)),
+                                 chapter.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays) ? 1 : 0,
+                    //IsRenewal = (chapter.WhenExpires >=
+                    //             DateTime.Now.AddDays(-1 * member.PersonType.StartSendingRenewalDays) &&
+                    //             chapter.WhenExpires <= DateTime.Now.AddDays(member.PersonType.StopSendingRenewalDays)),
                     Days = DateTime.Now <= chapter.WhenExpires
                         ? chapter.WhenExpires.Value.Date.Subtract(DateTime.Now.Date).Days
                         : DateTime.Now.Date.Subtract(chapter.WhenExpires.Value.Date).Days * -1,
@@ -241,6 +245,60 @@ namespace LuwAdmin.Web.Controllers
             }
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Renew(string MemberId, List<int> item_IsRenewal, List<int> item_ItemId, List<DateTime> item_NewWhenExpires)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var member = await _context.ApplicationUser.FindAsync(MemberId);
+            var chapters = await _context.Chapters.ToListAsync();
+
+            for (var i = 0; i < item_IsRenewal.Count; i++)
+            {
+                if (item_IsRenewal[i] == 1)
+                {
+                    if (item_ItemId[i] == 0)
+                    {
+                        member.WhenExpires = item_NewWhenExpires[i];
+                        // TODO Change WhenLastRenewalSent to nullable
+                        // member.WhenLastRenewalSent = null;
+                        _context.Update(member);
+
+                        var note = new ApplicationUserNote
+                        {
+                            ApplicationUserId = MemberId,
+                            AddedBy = user?.FirstName + " " + user?.LastName,
+                            WhenAdded = DateTime.Now,
+                            Note = "Renewed league membership."
+                        };
+                        _context.Add(note);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        var memberChapter = await _context.MemberChapters.FindAsync(item_ItemId[i]);
+                        memberChapter.WhenExpires = item_NewWhenExpires[i];
+                        memberChapter.WhenLastRenewalSent = null;
+                        _context.Update(memberChapter);
+
+                        var chapter = chapters.FirstOrDefault(c => c.Id == memberChapter.ChapterId);
+
+                        var note = new ApplicationUserNote
+                        {
+                            ApplicationUserId = MemberId,
+                            AddedBy = user?.FirstName + " " + user?.LastName,
+                            WhenAdded = DateTime.Now,
+                            Note = "Renewed chapter " + chapter.Name + "membership."
+                        };
+                        _context.Add(note);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

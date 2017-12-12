@@ -12,7 +12,7 @@
     <p>
         <div class="btn-group" role="group">
             <a asp-action="Create" class="btn btn-success"><i class="fa fa-plus"></i> New</a>
-            <div class="btn-group" role="group">
+            @*<div class="btn-group" role="group">
                 <button id="process" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="fa fa-random"></span> Processing <span class="caret"></span>
                 </button>
@@ -23,7 +23,7 @@
                     <li role="separator" class="divider"></li>
                     <li><a href="#">Expire members</a></li>
                 </ul>
-            </div>
+            </div>*@
         </div>
     </p>
 
@@ -77,7 +77,6 @@
 </section>
 
 <section class="content">
-    <input asp-for="Status" hidden />
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
@@ -87,106 +86,124 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div style="padding-left: 20px">
-                        @*<div>
-                            <div class="btn-group" role="group" aria-label="...">
-                                <a href="~/member/index?status=Active" id="Active" class="btn btn-default">Active</a>
-                                <a href="~/member/index?status=Inactive" id="Inactive" class="btn btn-default">Inactive</a>
-                                <a href="~/member/index?status=Guest" id="Guest" class="btn btn-default">Guest</a>
-                                <a href="~/member/index?status=All" id="All" class="btn btn-default">All</a>
-                            </div>
-                            <br /><br />
-                        </div>*@
-
                         <table id="memberTable" class="table table-hover table-bordered table-responsive">
                             <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayName("Name")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("City")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("Email")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("Person Type")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("Expires")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("Chapter")
-                                    </th>
-                                </tr>
+                            <tr><th></th></tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.Members)
-            {
-                                    <tr>
-                                        <td>
-                                            <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.City)
-                                        </td>
-                                        <td>
-                                            <a href="mailto:@item.Email">@Html.DisplayFor(modelItem => item.Email)</a>
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.PersonType.Name)
-                                        </td>
-                                        @if (item.Status == "Guest")
-                {
-                                            <td></td>
-                                        }
-                                        else
-                                        {
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.WhenExpires)
-                                                @if (item.WhenExpires >= DateTime.Now && item.WhenExpires <= DateTime.Now.AddMonths(1))
-                                                {
-                                                    <a asp-action="Renew" asp-route-id="@item.Id" class="btn-xs btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
-                                                }
-                                            </td>
-                                        }
-                                        <td>
-                                            @foreach (var mc in item.Chapters)
-                                            {
+                            @for (int i = 0; i < Model.Members.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <div class="col-md-1">
+                                                <i class="fa fa-user-circle text-light-blue" style="font-size: 48pt; text-align: left;"></i>
+                                            </div>
+                                            <div class="col-md-11">
                                                 <div>
-                                                    <div class="col-sm-6">
-                                                        @Html.DisplayFor(x => mc.Name)
-                                                        @if (mc.IsPrimary)
-                                                        {
-                                                            <i class="fa fa-heart"></i>
-                                                        }
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        @Html.DisplayFor(x => mc.WhenExpires)
-                                                        @if (mc.WhenExpires <= DateTime.Now.AddDays(30))
-                                                        {
-                                                            <a asp-action="RenewChapter" asp-route-id="@item.Id" class="btn-xs btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
-                                                        }
+                                                    <div class="col-md-12">
+                                                        <div style="font-size: 24pt;">
+                                                            <a href="~/Member/Details/@Model.Members[i].Id">@Html.DisplayFor(Model => Model.Members[i].CommonName)</a>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            }
-                                         </td>
-                                    </tr>
-                                }
+                                                <div class="col-md-2">
+                                                    <div>
+                                                        <div>
+                                                            @Html.DisplayFor(Model => Model.Members[i].FirstName) @Html.DisplayFor(Model => Model.Members[i].LastName) 
+                                                        </div>
+                                                        <div>
+                                                            <i>@Html.DisplayFor(modelItem => Model.Members[i].Pseudonym)</i>
+                                                        </div>
+                                                        <div>
+                                                            <a href="mailto:@Model.Members[i].Email">@Html.DisplayFor(modelItem => Model.Members[i].Email)</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div>
+                                                        @Html.DisplayFor(model => Model.Members[i].Street1)
+                                                    </div>
+                                                    <div>
+                                                        @Html.DisplayFor(model => Model.Members[i].Street2)
+                                                    </div>
+                                                    <div>
+                                                        @Html.DisplayFor(model => Model.Members[i].City), @Html.DisplayFor(model => Model.Members[i].State) @Html.DisplayFor(model => Model.Members[i].ZipCode)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div>
+                                                        @Html.LabelFor(modelItem => Model.Members[i].WhenExpires)
+                                                        @if (Model.Members[i].DaysToExpiration < 0)
+                                                        {
+                                                            <span class="label label-danger" style="font-size: 10pt;">@Html.DisplayFor(m => Model.Members[i].WhenExpires) (@(Model.Members[i].DaysToExpiration * -1) days past due)</span>
+                                                        }
+                                                        else if (Model.Members[i].IsExpiring)
+                                                        {
+                                                            <span class="label label-warning" style="font-size: 10pt;">@Html.DisplayFor(m => Model.Members[i].WhenExpires) (@Model.Members[i].DaysToExpiration days)</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@Html.DisplayFor(m => Model.Members[i].WhenExpires) (@Model.Members[i].DaysToExpiration days)</span>
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        @Html.LabelFor(modelItem => Model.Members[i].WhenJoined)
+                                                        @Html.DisplayFor(modelItem => Model.Members[i].WhenJoined)
+                                                    </div>
+                                                    <div>
+                                                        @Html.DisplayFor(modelItem => Model.Members[i].PersonTypeName)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    @for (var j = 0; j < Model.Members[i].Chapters.Count; j++)
+                                                    {
+                                                        <div class="col-sm-12">
+                                                            <div class="col-sm-4">
+                                                                @Html.DisplayFor(c => Model.Members[i].Chapters[j].Name)
+                                                                @if (Model.Members[i].Chapters[j].IsPrimary)
+                                                                {
+                                                                    <span> <i class="fa fa-heart text-heart"></i></span>
+                                                                }
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                @if (Model.Members[i].Chapters[j].IsExpiring)
+                                                                {
+                                                                    <span class="label label-warning" style="font-size: 9pt">@Html.DisplayFor(c => Model.Members[i].Chapters[j].WhenExpires) (@Html.DisplayFor(c => Model.Members[i].Chapters[j].DaysToExpiration))</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span>@Html.DisplayFor(c => Model.Members[i].Chapters[j].WhenExpires) (@Html.DisplayFor(c => Model.Members[i].Chapters[j].DaysToExpiration) days)</span>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <a asp-controller="Renewal" asp-action="Renew" asp-route-id="@Model.Members[i].Id" class="btn btn-warning"><i class="fa fa-calendar-alt"></i> Renew</a>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
-                        </div>
                     </div>
-</div>
+                </div>
             </div>
         </div>
+    </div>
 </section>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
             setActiveMenu("#menuMembers");
-            $('#memberTable').DataTable();
+            $('#memberTable').DataTable({
+                "ordering": false
+            });
             var item = '#' + $('#Status').val();
             $(item).addClass('pin-selected').attr('disabled', 'disabled');
             $('#process').dropdown();

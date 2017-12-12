@@ -32,7 +32,7 @@ namespace LuwAdmin.Web.Models.RenewalViewModels
         [DataType(DataType.Date)]
         public DateTime WhenExpires { get; set; }
 
-        public bool IsRenewal { get; set; }
+        public int IsRenewal { get; set; }
 
         public int Days { get; set; }
 

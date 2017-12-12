@@ -21,6 +21,7 @@
                     <h3 class="box-title">Member Details</h3>
                 </div>
                 <div class="box-body" style="padding-left: 20px">
+                    <input asp-for="MemberId" hidden />
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="col-md-2" style="text-align: left;">
                             <i class="fa fa-user-circle text-light-blue" style="font-size: 32pt"></i>
@@ -53,38 +54,43 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.RenewalItems)
-                                {
-                                    <tr>
-                                        <td>
-                                            @Html.CheckBoxFor(modelItem => item.IsRenewal)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Name)
-                                            @if (item.IsPrimary)
-                                            {
-                                                <span> <i class="fa fa-heart"></i></span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (item.IsRenewal && item.Days < 0)
-                                            {
-                                                <span class="label label-danger" style="font-size:9pt">@Html.DisplayFor(modelItem => item.WhenExpires, new {@class="label label-danger"}) (@Html.DisplayFor(modelItem => item.DaysText))</span>
-                                            }
-                                            else if (item.IsRenewal)
-                                            {
-                                                <span class="label label-warning" style="font-size:9pt">@Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.DaysText))</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.DaysText))</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @Html.TextBoxFor(modelItem => item.NewWhenExpires, item.NewWhenExpires.ToString("MM/dd/yyyy"), new { @class = "form-control" })
-                                        </td>
-                                    </tr>
-                                }
+                                @*https://stackoverflow.com/questions/36414516/asp-net-mvc-6-model-binding-to-complex-collection-ilistt*@
+                            @foreach (var item in Model.RenewalItems)
+                            {
+                                <tr>
+                                    <td>
+                                        <input value="@item.ItemId" id="@("item_ItemId" + item.ItemId.ToString())" name="item_ItemId" hidden />
+                                        <input name="item_IsRenewal" id="@("item_IsRenewal" + item.ItemId.ToString())" hidden value="@(item.IsRenewal)"/>
+                                        <input type="checkbox" id="item_IsRenewalCheck" @(item.IsRenewal == 1 ? "checked" : "") onchange="flipIsRenewal(@item.ItemId)">
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                        <input value="@item.Name" name="item_Name" id="item_Name" hidden/>
+                                        @if (item.IsPrimary)
+                                        {
+                                            <span> <i class="fa fa-heart text-heart"></i></span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsRenewal == 1 && item.Days < 0)
+                                        {
+                                            <span class="label label-danger" style="font-size: 9pt">@Html.DisplayFor(modelItem => item.WhenExpires, new {@class = "label label-danger"}) (@Html.DisplayFor(modelItem => item.DaysText))</span>
+                                        }
+                                        else if (item.IsRenewal == 1)
+                                        {
+                                            <span class="label label-warning" style="font-size: 9pt">@Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.DaysText))</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@Html.DisplayFor(modelItem => item.WhenExpires) (@Html.DisplayFor(modelItem => item.DaysText))</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <input class="form-control" value="@item.NewWhenExpires.ToString("MM/dd/yyy")" name="item_NewWhenExpires" id="item_NewWhenExpires"/>
+                                        @*@Html.TextBoxFor(modelItem => item.NewWhenExpires, item.NewWhenExpires.ToString("MM/dd/yyyy"), new { @class = "form-control" })*@
+                                    </td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>
@@ -105,9 +111,20 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
-                //$('#renewTable').DataTable();
                 setActiveMenu("#menuRenew");
-            });
+        });
+
+        function flipIsRenewal(id) {
+            var control = 'item_IsRenewal' + id;
+            var controlId = '#' + control;
+            var currentValue = $(controlId).val();
+            if (currentValue == 1) {
+                $(controlId).val(0);
+            }
+            else {
+                $(controlId).val(1);
+            }
+        }
     </script>
 }
 
